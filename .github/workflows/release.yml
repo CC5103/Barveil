@@ -71,3 +71,30 @@ jobs:
             dist/Barveil-${{ steps.version.outputs.version }}.dmg
             dist/SHA256SUMS.txt
           generate_release_notes: true
+          body: |
+            **Barveil hides the macOS menu bar only while a full-screen video is actually playing — and brings it right back when you pause.**
+
+            Keep the menu bar everywhere you like it. When a video goes full screen,
+            Barveil steps it aside so the picture is uninterrupted; pause the video or
+            leave full screen and it returns automatically.
+
+            ### Download
+
+            | File | What it is |
+            | --- | --- |
+            | `Barveil-${{ steps.version.outputs.version }}.dmg` | Drag **Barveil.app** into *Applications* (recommended) |
+            | `Barveil-${{ steps.version.outputs.version }}.zip` | The same app, zipped |
+            | `SHA256SUMS.txt` | SHA-256 checksums for both files |
+
+            Requires macOS 14.4 or later. The free build is ad-hoc signed and not notarized:
+            on first launch, right-click `Barveil.app` and choose **Open**, or clear the
+            quarantine flag once with
+
+            ```sh
+            xattr -dr com.apple.quarantine /Applications/Barveil.app
+            ```
+
+            Accessibility access is optional but recommended — it makes browser
+            full-screen detection exact (Privacy → Open System Settings). Barveil collects
+            nothing and makes no network requests. See the
+            [README](https://github.com/CC5103/Barveil#readme) for details.
