@@ -1,0 +1,38 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Build Debug
+        env:
+          BARVEIL_DERIVED_DATA: ${{ runner.temp }}/barveil-derived-data
+        run: ./scripts/build.sh Debug
+
+      - name: Run tests
+        env:
+          BARVEIL_DERIVED_DATA: ${{ runner.temp }}/barveil-derived-data
+        run: ./scripts/test.sh

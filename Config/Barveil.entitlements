@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	Barveil is distributed directly (Developer ID + notarization), not
+	through the Mac App Store. It is intentionally not sandboxed:
+	the menu-bar preference and the Accessibility API are core to the
+	product, and the private MediaRemote framework is needed for fast
+	play/pause detection in players such as IINA and VLC. App Sandbox
+	blocks or throttles those Mach/XPC services even when individual
+	exceptions are present.
+	-->
+</dict>
+</plist>

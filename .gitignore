@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+._*
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.xcresult
+*.dSYM
+
+# Local tooling
+.vscode/
+.idea/
+.fleet/
+*.log
+
+# Build products / shipping artifacts
+*.app
+dist/
+*.dmg
+*.zip
+*.7z
+
+# Secrets and signing material
+.env
+.env.*
+*.p12
+*.mobileprovision
+*.cer
+*.key
+
+# Swift Package Manager (unused today, kept for later)
+.build/
+.swiftpm/
+
+# Localization helper
+__pycache__/
+*.pyc

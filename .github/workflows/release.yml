@@ -1,0 +1,73 @@
+name: Package
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Marketing version, for example 1.0.0
+        required: true
+        default: "1.0.0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Run tests
+        env:
+          BARVEIL_DERIVED_DATA: ${{ runner.temp }}/barveil-derived-data
+        run: ./scripts/test.sh
+
+      - name: Build package
+        env:
+          BARVEIL_MARKETING_VERSION: ${{ steps.version.outputs.version }}
+          BARVEIL_DERIVED_DATA: ${{ runner.temp }}/barveil-derived-data
+        run: ./scripts/package.sh
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Barveil-${{ steps.version.outputs.version }}
+          path: |
+            dist/Barveil-${{ steps.version.outputs.version }}.zip
+            dist/Barveil-${{ steps.version.outputs.version }}.dmg
+            dist/SHA256SUMS.txt
+
+      - name: Publish GitHub Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Barveil-${{ steps.version.outputs.version }}.zip
+            dist/Barveil-${{ steps.version.outputs.version }}.dmg
+            dist/SHA256SUMS.txt
+          generate_release_notes: true
