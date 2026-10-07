@@ -207,6 +207,8 @@ credentials and environment variables.
 ## GitHub Actions
 
 - **Build and Test** runs on pushes to `main`, pull requests, and manual dispatches.
+  Pushes to `main` (and manual runs) also upload the zip, dmg, and `SHA256SUMS.txt` as a
+  workflow artifact, so the newest build is always downloadable from the run page.
 - **Package** runs on `v*` tags or manually. It builds the zip, dmg, and checksums;
   tag runs publish them to the matching GitHub Release.
 

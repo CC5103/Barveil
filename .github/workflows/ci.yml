@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Show toolchain
         run: |
@@ -36,3 +36,43 @@ jobs:
         env:
           BARVEIL_DERIVED_DATA: ${{ runner.temp }}/barveil-derived-data
         run: ./scripts/test.sh
+
+  package:
+    # Every push to main (and every manual run) also publishes a downloadable
+    # zip + dmg, so the newest build is always available from the run page.
+    if: github.event_name != 'pull_request'
+    needs: build-and-test
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Build package
+        env:
+          BARVEIL_DERIVED_DATA: ${{ runner.temp }}/barveil-derived-data
+        run: ./scripts/package.sh
+
+      - name: Resolve names
+        id: names
+        env:
+          BARVEIL_DERIVED_DATA: ${{ runner.temp }}/barveil-derived-data
+        run: |
+          VERSION="$(plutil -extract CFBundleShortVersionString raw -o - "$BARVEIL_DERIVED_DATA/Build/Products/Release/Barveil.app/Contents/Info.plist")"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "commit=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Barveil-${{ steps.names.outputs.version }}-${{ steps.names.outputs.commit }}
+          path: |
+            dist/*.zip
+            dist/*.dmg
+            dist/SHA256SUMS.txt
+          if-no-files-found: error

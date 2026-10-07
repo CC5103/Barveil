@@ -191,7 +191,9 @@ Developer ID 签名与公证流程见 [`../scripts/notarize.sh`](../scripts/nota
 
 ## GitHub Actions
 
-- **Build and Test**：在 `main` push、Pull Request 或手动触发时运行构建和测试。
+- **Build and Test**：在 `main` push、Pull Request 或手动触发时运行构建和测试；
+  每次 `main` push（手动触发同样）还会把 zip、dmg 和 `SHA256SUMS.txt` 作为 Actions
+  工件上传，可直接在运行页面下载。
 - **Package**：在 `v*` tag 或手动触发时生成 zip、dmg 和校验文件；tag 执行会发布
   到对应的 GitHub Release。
 

@@ -207,7 +207,8 @@ Developer ID 署名と公証については
 ## GitHub Actions
 
 - **Build and Test**：`main` への push、Pull Request、手動実行でビルドとテストを
-  実行します。
+  実行します。`main` への push（手動実行も同様）では zip・dmg・`SHA256SUMS.txt` が
+  ワークフロー成果物としてアップロードされ、実行ページからダウンロードできます。
 - **Package**：`v*` tag または手動実行で zip、dmg、チェックサムを作成します。
   tag 実行時は対応する GitHub Release にアップロードします。
 
